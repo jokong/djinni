@@ -1,23 +1,15 @@
 #include "test_helpers.hpp"
 #include "client_returned_record.hpp"
 #include "client_interface.hpp"
-#include "user_token.hpp"
-#include "assorted_primitives.hpp"
-#include "color.hpp"
-#include "map_list_record.hpp"
-#include "nested_collection.hpp"
-#include "primitive_list.hpp"
-#include "set_record.hpp"
+#include "token.hpp"
 #include <exception>
-
-namespace testsuite {
 
 SetRecord TestHelpers::get_set_record() {
     return SetRecord { {
         "StringA",
         "StringB",
         "StringC"
-    }, std::unordered_set<int32_t>{} };
+	}, {1, 2, 3} };
 }
 
 bool TestHelpers::check_set_record(const SetRecord & rec) {
@@ -34,15 +26,21 @@ bool TestHelpers::check_primitive_list(const PrimitiveList & pl) {
     return pl.list == cPrimitiveList.list;
 }
 
-static const NestedCollection cNestedCollection { { {u8"String1", u8"String2"},
-                                                    {u8"StringA", u8"StringB"} } };
+inline NestedCollection cNestedCollection() {
+	NestedCollection c;
+	std::unordered_set<std::string> s1 = { "String1", "String2" };
+	c.set_list.push_back(s1);
+	std::unordered_set<std::string> s2 = { "StringA", "StringB" };
+	c.set_list.push_back(s2);
+	return c;
+}
 
 NestedCollection TestHelpers::get_nested_collection() {
-    return cNestedCollection;
+    return cNestedCollection();
 }
 
 bool TestHelpers::check_nested_collection(const NestedCollection & nc) {
-    return nc.set_list == cNestedCollection.set_list;
+    return nc.set_list == cNestedCollection().set_list;
 }
 
 static const std::unordered_map<std::string, int64_t> cMap = {
@@ -94,28 +92,28 @@ void TestHelpers::check_client_interface_nonascii(const std::shared_ptr<ClientIn
     }
 }
 
-std::shared_ptr<UserToken> TestHelpers::token_id(const std::shared_ptr<UserToken> & in) {
+std::shared_ptr<Token> TestHelpers::token_id(const std::shared_ptr<Token> & in) {
     return in;
 }
 
-class CppToken : public UserToken {
+class CppToken : public Token {
     std::string whoami() { return "C++"; }
 };
 
-std::shared_ptr<UserToken> TestHelpers::create_cpp_token() {
+std::shared_ptr<Token> TestHelpers::create_cpp_token() {
     return std::make_shared<CppToken>();
 }
 
-void TestHelpers::check_cpp_token(const std::shared_ptr<UserToken> & in) {
+void TestHelpers::check_cpp_token(const std::shared_ptr<Token> & in) {
     // Throws bad_cast if type is wrong
     (void)dynamic_cast<CppToken &>(*in);
 }
 
-int64_t TestHelpers::cpp_token_id(const std::shared_ptr<UserToken> & in) {
+int64_t TestHelpers::cpp_token_id(const std::shared_ptr<Token> & in) {
     return reinterpret_cast<int64_t>(in.get());
 }
 
-void TestHelpers::check_token_type(const std::shared_ptr<UserToken> &t, const std::string & type) {
+void TestHelpers::check_token_type(const std::shared_ptr<Token> &t, const std::string & type) {
     if (t->whoami() != type) {
         throw std::invalid_argument("wrong token type");
     }
@@ -151,4 +149,12 @@ std::vector<uint8_t> TestHelpers::id_binary(const std::vector<uint8_t> & v) {
     return v;
 }
 
-} // namespace testsuite
+std::chrono::system_clock::time_point sys_time = std::chrono::system_clock::now();
+
+DateRecord TestHelpers::get_date_record() {
+	return DateRecord(sys_time);
+}
+
+bool TestHelpers::check_date_record(const DateRecord & rec) {
+	return rec == DateRecord(sys_time);
+}

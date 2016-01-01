@@ -1,0 +1,3 @@
+token = interface +c {
+  whoami() : string;
+}
