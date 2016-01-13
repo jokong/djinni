@@ -14,4 +14,26 @@ while [ -h "$loc" ]; do
 done
 base_dir=$(cd "`dirname "$loc"`" && pwd)
 
-exec "$base_dir/target/start" "$@"
+# OS specific support (must be 'true' or 'false').
+cygwin=false
+msys=false
+darwin=false
+case "`uname`" in
+  CYGWIN* )
+    cygwin=true
+    ;;
+  Darwin* )
+    darwin=true
+    ;;
+  MINGW* )
+    msys=true
+    ;;
+esac
+
+START_CMD=start
+
+if [ $cygwin -o $msys ]; then
+    START_CMD=start.bat
+fi
+
+exec "$base_dir/target/$START_CMD" "$@"
