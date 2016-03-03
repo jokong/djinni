@@ -32,7 +32,7 @@ esac
 
 START_CMD=start
 
-if [ $cygwin -o $msys ]; then
+if [ $cygwin = "true" -o $msys = "true" ]; then
     START_CMD=start.bat
 fi
 
