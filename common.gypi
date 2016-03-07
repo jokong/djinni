@@ -19,6 +19,7 @@
           "xcode_settings" : {
             'SDKROOT': 'iphoneos',
             'SUPPORTED_PLATFORMS': 'iphonesimulator iphoneos',
+            'IPHONEOS_DEPLOYMENT_TARGET': '7.0',
           }
         }]
     ],
