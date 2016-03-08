@@ -29,8 +29,8 @@ object Main {
     var cppIncludePrefix: String = ""
     var cppExtendedRecordIncludePrefix: String = ""
     var cppFileIdentStyle: IdentConverter = IdentStyle.underLower
-    var cppOptionalTemplate: String = "std::optional"
-    var cppOptionalHeader: String = "<optional>"
+    var cppOptionalTemplate: String = "boost::optional"
+    var cppOptionalHeader: String = "<boost\\optional.hpp>"
     var cppEnumHashWorkaround : Boolean = true
     var cppNnHeader: Option[String] = None
     var cppNnType: Option[String] = None
