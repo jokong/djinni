@@ -42,6 +42,15 @@
                   "objc",
                 ],
             },
+            'configurations': {
+                'Debug': {
+                    'xcode_settings' : {
+                        'ONLY_ACTIVE_ARCH': 'NO',
+                        'IPHONEOS_DEPLOYMENT_TARGET': '7.0',
+                    },
+                },
+            },
+            
         },
         {
             "target_name": "djinni_cx",
