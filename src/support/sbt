@@ -49,6 +49,10 @@ if $cygwin; then
     base_dir=`cygpath --path --mixed "$DJINNI_SRC/support"`
 fi
 
+if [[ "$DJINNI_SBT_BOOT_PROPERTIES" != "" ]]; then
+    jvm_args+=(-Dsbt.boot.properties="$DJINNI_SBT_BOOT_PROPERTIES")
+fi
+
 java \
     -Xms512M -Xmx1024M -Xss1M -XX:+CMSClassUnloadingEnabled "${jvm_args[@]}" \
     -Djava.security.manager -Djava.security.policy="$base_dir/sbt.security.policy" \

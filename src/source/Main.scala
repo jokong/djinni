@@ -27,9 +27,10 @@ object Main {
     var cppOutFolder: Option[File] = None
     var cppNamespace: String = ""
     var cppIncludePrefix: String = ""
+    var cppExtendedRecordIncludePrefix: String = ""
     var cppFileIdentStyle: IdentConverter = IdentStyle.underLower
-    var cppOptionalTemplate: String = "std::optional"
-    var cppOptionalHeader: String = "<optional>"
+    var cppOptionalTemplate: String = "boost::optional"
+    var cppOptionalHeader: String = "<boost\\optional.hpp>"
     var cppEnumHashWorkaround : Boolean = true
     var cppNnHeader: Option[String] = None
     var cppNnType: Option[String] = None
@@ -62,6 +63,7 @@ object Main {
     var objcIdentStyle = IdentStyle.objcDefault
     var objcTypePrefix: String = ""
     var objcIncludePrefix: String = ""
+    var objcExtendedRecordIncludePrefix: String = ""
     var objcppIncludePrefix: String = ""
     var objcppIncludeCppPrefix: String = ""
     var objcppIncludeObjcPrefixOptional: Option[String] = None
@@ -84,7 +86,7 @@ object Main {
     var yamlOutFolder: Option[File] = None
     var yamlOutFile: Option[String] = None
     var yamlPrefix: String = ""
-
+	
     val argParser = new scopt.OptionParser[Unit]("djinni") {
 
       def identStyle(optionName: String, update: IdentConverter => Unit) = {
@@ -171,6 +173,10 @@ object Main {
         .text("The prefix for #include of the main C++ header files from Objective-C++ files.")
       opt[String]("objcpp-include-objc-prefix").valueName("<prefix>").foreach(x => objcppIncludeObjcPrefixOptional = Some(x))
         .text("The prefix for #import of the Objective-C header files from Objective-C++ files (default: the same as --objcpp-include-prefix)")
+      opt[String]("cpp-extended-record-include-prefix").valueName("<prefix>").foreach(cppExtendedRecordIncludePrefix = _)
+        .text("The prefix path for #include of the extended record C++ header (.hpp) files")
+      opt[String]("objc-extended-record-include-prefix").valueName("<prefix>").foreach(objcExtendedRecordIncludePrefix = _)
+        .text("The prefix path for #import of the extended record Objective-C header (.h) files")
       opt[String]("objcpp-namespace").valueName("<prefix>").foreach(objcppNamespace = _)
         .text("The namespace name to use for generated Objective-C++ classes.")
       opt[String]("objc-base-lib-include-prefix").valueName("...").foreach(x => objcBaseLibIncludePrefix = x)
@@ -312,6 +318,7 @@ object Main {
       cppOutFolder,
       cppHeaderOutFolder,
       cppIncludePrefix,
+      cppExtendedRecordIncludePrefix,
       cppNamespace,
       cppIdentStyle,
       cppFileIdentStyle,
@@ -338,6 +345,7 @@ object Main {
       objcppExt,
       objcHeaderExt,
       objcIncludePrefix,
+      objcExtendedRecordIncludePrefix,
       objcppIncludePrefix,
       objcppIncludeCppPrefix,
       objcppIncludeObjcPrefix,
