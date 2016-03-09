@@ -375,11 +375,13 @@ class CxGenerator(spec: Spec) extends Generator(spec) {
 
       writeCxFile(ident.name, origin, refs.cx, w=>{})
 
+      refs.hx.foreach(hxy=> refs.hx += hxy.replace(".h", ".hpp"))
       refs.hx += "#include " + q(spec.cxIncludeCppPrefix + spec.cppFileIdentStyle(ident.name) + "." + spec.cppHeaderExt)
       refs.hx += translationHeader()
       refs.hx += cppHeader(ident.name)
       refs.hx += "#include <functional>"
       refs.hx += "#include " + q(cxMarshal.headerName(ident.name))
+
       writeHxFile(ident.name + "_proxy", origin, refs.hx, refs.hxFwds, w=>{
         val nativeDecls = mutable.TreeSet[String]()
         w.wl(s"template<> class CxInterfaceProxy<$cppSelf> : public $cppSelf").bracedSemi {
